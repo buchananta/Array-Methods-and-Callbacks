@@ -49,15 +49,13 @@ Parameters:
  * callback function getWinners
  * callback function getYears
  */
-//this does NOT seem like the right way to do this.
-//But I think the right way, is start over with the original finals data, and .map() it.
+
 function getWinnersByYear(getWinners, getYears, data) {
     const country = getWinners(getFinals, data); //A wild function appears!
     return getYears(getFinals, data).map(function(year, i) {
         return `In ${year}, ${country[i]} won the world cup!`;
     })
 };
-//I'm totally going to come back and do this more elegantly.
 
 
 console.log(getWinnersByYear(getWinners, getYears, fifaData));
@@ -68,7 +66,6 @@ function getAverageGoals(data) {
     const denominator = data.length;
     let away = data.reduce(function(acc, key) {
         return acc + key["Away Team Goals"];
-
     }, 0)
     let home = data.reduce(function(acc, key) {
         return acc + key["Home Team Goals"];
@@ -88,31 +85,73 @@ console.log(getAverageGoals(fifaData));
 Hint: Investigate your data to find "team initials"!
 Hint: use `.reduce` */
 
-function getCountryWins(/* code here */) {
+//I didn't end up using reduce? I'll have to re-attempt this later.
+function getCountryWins(data, initials) {
+    data = getFinals(data);
+    data = data.filter( function(elem) {
+        if (elem["Home Team Goals"] > elem["Away Team Goals"] &&
+            elem["Home Team Initials"] === initials)
+            return true;
+        if (elem["Away Team Goals"] > elem["Home Team Goals"] &&
+            elem["Away Team Initials"] === initials)
+            return true;
+        return false;
+    })
+    return data.length;
+}
 
-    /* code here */
-
-};
-
-getCountryWins();
+console.log(getCountryWins(fifaData, "ITA"));
 
 
 /* Stretch 3: Write a function called getGoals() that accepts a parameter `data` and returns the team with the most goals score per appearance (average goals for) in the World Cup finals */
 
-function getGoals(/* code here */) {
-
-    /* code here */
-
+//I keep trying to do this without reduce, because I think reduce should be for combining all elements together. But, I think this is a good use case, insanely complicated, but whatever.
+function getGoals(data) {
+    //lets start by making a object with all the goals, and number of games
+    //then we can just reduce it, shoving the highest average in the acc
+    data = data.reduce(function(acc, item) {
+        let hTeam = item["Home Team Name"];
+        let aTeam = item["Away Team Name"];
+        if (acc[hTeam]) {
+            acc[hTeam].score += item["Home Team Goals"];
+            acc[hTeam].count += 1;
+        } else if (!acc[hTeam]) {
+            acc[hTeam] = {};
+            acc[hTeam].score = item["Home Team Goals"];
+            acc[hTeam].count = 1;
+        }
+        if (acc[aTeam]) {
+            acc[aTeam].score += item["Away Team Goals"];
+            acc[aTeam].count += 1;
+        } else if (!acc[aTeam]) {
+            acc[aTeam] = {};
+            acc[aTeam].score = item["Away Team Goals"];
+            acc[aTeam].count = 1;
+        }
+        return acc;
+    }, {})
+    return data;
+    //okay, this is great, but I'm returning an object, and need to use the object key(name)
+    //and... How do I do that? I think I needed to make an array.
+    }
 };
-
-getGoals();
+// function getGoals2(data) {
+//     data = data.reduce(function(acc, item) {
+//         let hTeam = item["Home Team Name"];
+//         let aTeam = item["Away Team Name"];
+//         if (acc.Filter(x => x.team === hTeam) {
+//             acc.push({team: hTeam, score: item["Home Team Goals"], games: 1});
+//         } else acc[acc.indexOf(
+//     }
+//     return acc;
+// }
+console.log(getGoals(fifaData));
 
 
 /* Stretch 4: Write a function called badDefense() that accepts a parameter `data` and calculates the team with the most goals scored against them per appearance (average goals against) in the World Cup finals */
 
-function badDefense(/* code here */) {
-
-    /* code here */
+function badDefense(data) {
+    
 
 };
 
