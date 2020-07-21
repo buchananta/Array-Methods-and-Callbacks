@@ -30,9 +30,6 @@ function getYears(callback, data) {
 
 console.log(getYears(getFinals, fifaData));
 
-//why is this next line here? I'll just comment it out
-//getYears()
-
 /* Task 5: Implement a higher-order function called `getWinners`, that accepts the callback function `getFinals()` and determine the winner (home or away) of each `finals` game. Return the name of all winning countries in an array called `winners` */ 
 
 function getWinners(callback, data) {
@@ -52,22 +49,37 @@ Parameters:
  * callback function getWinners
  * callback function getYears
  */
-
-function getWinnersByYear(/* code here */) {
-
+//this does NOT seem like the right way to do this.
+//But I think the right way, is start over with the original finals data, and .map() it.
+function getWinnersByYear(getWinners, getYears, data) {
+    const country = getWinners(getFinals, data); //A wild function appears!
+    return getYears(getFinals, data).map(function(year, i) {
+        return `In ${year}, ${country[i]} won the world cup!`;
+    })
 };
+//I'm totally going to come back and do this more elegantly.
 
-getWinnersByYear();
+
+console.log(getWinnersByYear(getWinners, getYears, fifaData));
 
 /* Task 7: Write a function called `getAverageGoals` that accepts a parameter `data` and returns the the average number of home team goals and away team goals scored per match (Hint: use .reduce and do this in 2 steps) */
 
-function getAverageGoals(/* code here */) {
+function getAverageGoals(data) {
+    const denominator = data.length;
+    let away = data.reduce(function(acc, key) {
+        return acc + key["Away Team Goals"];
 
-    /* code here */
+    }, 0)
+    let home = data.reduce(function(acc, key) {
+        return acc + key["Home Team Goals"];
+    }, 0)
+    return {"Average Home Team Goals": home / data.length,
+            "Average Away Team Goals": away / data.length,
+            }
+}
 
-};
-
-getAverageGoals();
+console.log(fifaData.length);
+console.log(getAverageGoals(fifaData));
 
 /// STRETCH 🥅 //
 
