@@ -51,7 +51,7 @@ Parameters:
  */
 
 function getWinnersByYear(getWinners, getYears, data) {
-    const country = getWinners(getFinals, data); //A wild function appears!
+    const country = getWinners(getFinals, data);
     return getYears(getFinals, data).map(function(year, i) {
         return `In ${year}, ${country[i]} won the world cup!`;
     })
@@ -99,7 +99,21 @@ function getCountryWins(data, initials) {
     })
     return data.length;
 }
+//almost identical?
+function getCountryWinsReduce(data, initials) {
+    data = getFinals(data);
+    return data.reduce(function(acc, item) {
+        if (item["Home Team Goals"] > item["Away Team Goals"] &&
+            item["Home Team Initials"] === initials)
+            acc++;
+        if (item["Away Team Goals"] > item["Home Team Goals"] &&
+            item["Away Team Initials"] === initials)
+            acc++;
+        return acc;
+    }, 0);
+}
 
+console.log(`reduced version ${getCountryWinsReduce(fifaData, "ITA")}`);
 console.log(getCountryWins(fifaData, "ITA"));
 
 
