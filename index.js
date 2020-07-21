@@ -107,6 +107,7 @@ console.log(getCountryWins(fifaData, "ITA"));
 
 //I keep trying to do this without reduce, because I think reduce should be for combining all elements together. But, I think this is a good use case, insanely complicated, but whatever.
 function getGoals(data) {
+    //I DON"T WORK!! see getGoals2 for working version
     //lets start by making a object with all the goals, and number of games
     //then we can just reduce it, shoving the highest average in the acc
     data = data.reduce(function(acc, item) {
@@ -133,28 +134,74 @@ function getGoals(data) {
     return data;
     //okay, this is great, but I'm returning an object, and need to use the object key(name)
     //and... How do I do that? I think I needed to make an array.
-    }
-};
-// function getGoals2(data) {
-//     data = data.reduce(function(acc, item) {
-//         let hTeam = item["Home Team Name"];
-//         let aTeam = item["Away Team Name"];
-//         if (acc.Filter(x => x.team === hTeam) {
-//             acc.push({team: hTeam, score: item["Home Team Goals"], games: 1});
-//         } else acc[acc.indexOf(
-//     }
-//     return acc;
-// }
-console.log(getGoals(fifaData));
+}
+function getGoals2(data) {
+    data = data.reduce(function(acc, item) {
+        let hTeam = item["Home Team Name"];
+        let aTeam = item["Away Team Name"];
+
+        let index = acc.findIndex(item => item.team == hTeam);
+        if (index == -1) {
+            acc.push({team: hTeam, score: item["Home Team Goals"], games: 1});
+        } else {
+            acc[index].games++;
+            acc[index].score += item["Home Team Goals"];
+        }
+        index = acc.findIndex(item => item.team == aTeam);
+        if (index == -1) {
+            acc.push({team: aTeam, score: item["Away Team Goals"], games: 1});
+        } else {
+            acc[index].games++;
+            acc[index].score += item["Away Team Goals"];
+        }
+        return acc;
+    }, [])
+    data = data.reduce(function(acc, item) {
+        if ((item.score / item.games) > acc.ave) {
+            acc = item;
+        }
+        return acc;
+    });
+    return data.team;
+} //I just realized this is supposed to only be for games for the world cup finals. I'm not re-writing it though, just call getFinals first.
+console.log(getGoals2(getFinals(fifaData))); //uruguay
+console.log(getGoals2(fifaData)); // france
 
 
 /* Stretch 4: Write a function called badDefense() that accepts a parameter `data` and calculates the team with the most goals scored against them per appearance (average goals against) in the World Cup finals */
 
 function badDefense(data) {
-    
+    //same as previous function, just swapped out adding
+    //opposing teams goals (swap hTeam and aTeam variables)
+    data = data.reduce(function(acc, item) {
+        let hTeam = item["Home Team Name"];
+        let aTeam = item["Away Team Name"];
 
+        let index = acc.findIndex(item => item.team == aTeam);
+        if (index == -1) {
+            acc.push({team: aTeam, score: item["Home Team Goals"], games: 1});
+        } else {
+            acc[index].games++;
+            acc[index].score += item["Home Team Goals"];
+        }
+        index = acc.findIndex(item => item.team == hTeam);
+        if (index == -1) {
+            acc.push({team: hTeam, score: item["Home Team Goals"], games: 1});
+        } else {
+            acc[index].games++;
+            acc[index].score += item["Away Team Goals"];
+        }
+        return acc;
+    }, [])
+    data = data.reduce(function(acc, item) {
+        if ((item.score / item.games) > acc.ave) {
+            acc = item;
+        }
+        return acc;
+    });
+    return data.team;
 };
 
-badDefense();
+console.log(badDefense(getFinals(fifaData)));
 
 /* If you still have time, use the space below to work on any stretch goals of your chosing as listed in the README file. */
