@@ -12,6 +12,18 @@ console.log('its working');
 (d) Away Team goals for 2014 world cup final
 (e) Winner of 2014 world cup final */
 
+//these are _really_ ugly, but I forgot to do them before, so I'm just getting them over with.
+console.log(fifaData.filter(e => e.Stage == 'Final' && e.Year == '2014')[0]["Home Team Name"]);
+console.log(fifaData.filter(e => e.Stage == 'Final' && e.Year == '2014')[0]["Away Team Name"]);
+console.log(fifaData.filter(e => e.Stage == 'Final' && e.Year == '2014')[0]["Home Team Goals"]);
+console.log(fifaData.filter(e => e.Stage == 'Final' && e.Year == '2014')[0]["Away Team Goals"]);
+let theGame = fifaData.filter(e => e.Stage == 'Final' && e.Year == '2014');
+console.log(theGame.map(function(game){
+    if (game["Home Team Goals"] > game["Away Team Goals"])
+        return game["Home Team Name"];
+    return game["Away Team Name"];
+})
+)
 
 /* Task 2: Create a function called  getFinals that takes `data` as an argument and returns an array of objects with only finals data */
 
